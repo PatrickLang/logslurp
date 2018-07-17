@@ -17,3 +17,5 @@ docker build -t logslurp .
 ```
 docker run -i -t -v ~/.kube/config:/root/.kube/config -v $PWD:/opt/k/out logslurp
 ```
+
+![running it on a 2 node cluster](logslurp.gif)

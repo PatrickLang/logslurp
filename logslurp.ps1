@@ -24,11 +24,12 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
   Write-Host Connected to $_.status.nodeInfo.machineID
   # Write-Host Logs:
   $zipName = "$($_.status.nodeInfo.machineID)-$(get-date -format 'yyyyMMdd-hhmmss')_logs.zip"
-  $remoteZipPath = Invoke-Command -Session $_.pssession { 
+  $remoteZipPath = Invoke-Command -Session $_.pssession {
     $paths = get-childitem c:\k\*.log -Exclude $using:lockedFiles
     $paths += $using:lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru }
     get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | ft Index, TimeGenerated, EntryType, Message | out-file "$ENV:TEMP\\services.log"
     $paths += "$ENV:TEMP\\services.log"
+    md 'c:\k\debug' -ErrorAction Ignore
     Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/debug/collectlogs.ps1 -OutFile 'c:\k\debug\collectlogs.ps1'
     & 'c:\k\debug\collectlogs.ps1'
     $netLogs = get-childitem c:\k -Recurse -Include $using:netDebugFiles

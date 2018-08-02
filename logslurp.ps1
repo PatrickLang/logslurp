@@ -21,6 +21,8 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
   $remoteZipPath = Invoke-Command -Session $_.pssession { 
     $paths = get-childitem c:\k\*.log -Exclude $using:lockedFiles
     $paths += $using:lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru }
+    get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | ft Index, TimeGenerated, EntryType, Message | out-file "$ENV:TEMP\\services.log"
+    $paths += "$ENV:TEMP\\services.log"
     Compress-Archive -Path $paths -DestinationPath $using:zipName
     Get-ChildItem $using:zipName
   } 

@@ -31,7 +31,7 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
     $paths += "$ENV:TEMP\\services.log"
     mkdir 'c:\k\debug' -ErrorAction Ignore
     Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/PatrickLang/SDN/patch-1-temp/Kubernetes/windows/debug/collectlogs.ps1 -OutFile 'c:\k\debug\collectlogs.ps1'
-    & 'c:\k\debug\collectlogs.ps1'
+    & 'c:\k\debug\collectlogs.ps1' | write-Host
     $netLogs = get-childitem c:\k -Recurse -Include $using:netDebugFiles
     $paths += $netLogs
     Compress-Archive -Path $paths -DestinationPath $using:zipName

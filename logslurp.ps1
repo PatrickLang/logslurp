@@ -35,7 +35,7 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
     $netLogs = get-childitem c:\k -Recurse -Include $using:netDebugFiles
     $paths += $netLogs
     Compress-Archive -Path $paths -DestinationPath $using:zipName
-    $netLogs | Foreach-Object { Remove-Item $_ }
+    $netLogs | Foreach-Object { Remove-Item $_ } | Out-Null
     Get-ChildItem $using:zipName
   } 
   Copy-Item -FromSession $_.pssession $remoteZipPath -Destination out/

@@ -41,6 +41,6 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
   }
   Write-Host Copying out logs
   Copy-Item -FromSession $_.pssession $remoteZipPath -Destination out/
-  Write-Host "Done with $_.status.nodeInfo.machineID, closing session"
-  Remove-PSSession $_.pssession
+  Write-Host "Done with $($_.status.nodeInfo.machineID)" #, closing session"
+  # Remove-PSSession $_.pssession # BUG - seems to hang in a container
 }

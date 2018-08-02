@@ -36,7 +36,11 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
     $paths += $netLogs
     Compress-Archive -Path $paths -DestinationPath $using:zipName
     $netLogs | Foreach-Object { Remove-Item $_ } | Out-Null
+    Write-Host Compressing all logs to $using:zipName
     Get-ChildItem $using:zipName
-  } 
+  }
+  Write-Host Copying out logs
   Copy-Item -FromSession $_.pssession $remoteZipPath -Destination out/
+  Write-Host "Done with $_.status.nodeInfo.machineID, closing session"
+  Remove-PSSession $_.pssession
 }

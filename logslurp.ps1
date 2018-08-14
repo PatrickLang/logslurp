@@ -28,10 +28,12 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
   $remoteZipPath = Invoke-Command -Session $_.pssession {
     $paths = get-childitem c:\k\*.log -Exclude $using:lockedFiles
     $paths += $using:lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru }
-    get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | Select-Object Index, TimeGenerated, EntryType, Message | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_services.csv"
+    get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_services.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_services.csv"
-    Get-WinEvent -LogName Microsoft-Windows-Hyper-V-Compute-Operational | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message | Export-Csv -Path "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
+    Get-WinEvent -LogName Microsoft-Windows-Hyper-V-Compute-Operational | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message | Sort-Object TimeCreated | Export-Csv -Path "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
+    get-eventlog -LogName Application -Source Docker | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
+    $paths += "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
     mkdir 'c:\k\debug' -ErrorAction Ignore
     Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/debug/collectlogs.ps1 -OutFile 'c:\k\debug\collectlogs.ps1'
     & 'c:\k\debug\collectlogs.ps1' | write-Host

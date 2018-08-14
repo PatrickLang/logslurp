@@ -30,7 +30,7 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
     $paths += $using:lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru }
     get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_services.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_services.csv"
-    Get-WinEvent -LogName Microsoft-Windows-Hyper-V-Compute-Operational | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message | Sort-Object Index | Export-Csv -Path "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
+    Get-WinEvent -LogName Microsoft-Windows-Hyper-V-Compute-Operational | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message | Sort-Object TimeCreated | Export-Csv -Path "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
     get-eventlog -LogName Application -Source Docker | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_docker.csv"

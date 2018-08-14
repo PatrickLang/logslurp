@@ -23,12 +23,15 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
   Add-Member -InputObject $_ -MemberType NoteProperty -Name "pssession" -Value (New-PSSession -ComputerName $_.status.nodeInfo.machineID -Credential $cred -UseSSL -Authentication basic)
   Write-Host Connected to $_.status.nodeInfo.machineID
   # Write-Host Logs:
-  $zipName = "$($_.status.nodeInfo.machineID)-$(get-date -format 'yyyyMMdd-hhmmss')_logs.zip"
+  $timeStamp = get-date -format 'yyyyMMdd-hhmmss'
+  $zipName = "$($_.status.nodeInfo.machineID)-$($timeStamp)_logs.zip"
   $remoteZipPath = Invoke-Command -Session $_.pssession {
     $paths = get-childitem c:\k\*.log -Exclude $using:lockedFiles
     $paths += $using:lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru }
-    get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | ft Index, TimeGenerated, EntryType, Message | out-file "$ENV:TEMP\\services.log"
-    $paths += "$ENV:TEMP\\services.log"
+    get-eventlog -LogName System -Source "Service Control Manager" -Message *kub* | Select-Object Index, TimeGenerated, EntryType, Message | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_services.csv"
+    $paths += "$ENV:TEMP\\$($using:timeStamp)_services.csv"
+    Get-WinEvent -LogName Microsoft-Windows-Hyper-V-Compute-Operational | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message | Export-Csv -Path "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
+    $paths += "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
     mkdir 'c:\k\debug' -ErrorAction Ignore
     Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/debug/collectlogs.ps1 -OutFile 'c:\k\debug\collectlogs.ps1'
     & 'c:\k\debug\collectlogs.ps1' | write-Host

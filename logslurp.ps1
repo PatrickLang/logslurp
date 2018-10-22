@@ -38,7 +38,7 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
     $paths += "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
     get-eventlog -LogName Application -Source Docker | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
-    mkdir 'c:\k\debug' -ErrorAction Ignore
+    mkdir 'c:\k\debug' -ErrorAction Ignore | Out-Null
     Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/Microsoft/SDN/master/Kubernetes/windows/debug/collectlogs.ps1 -OutFile 'c:\k\debug\collectlogs.ps1'
     & 'c:\k\debug\collectlogs.ps1' | write-Host
     $netLogs = get-childitem c:\k -Recurse -Include $using:netDebugFiles

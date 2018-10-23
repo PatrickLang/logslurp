@@ -38,7 +38,7 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
     $paths += "$ENV:TEMP\\$($using:timeStamp)_hyper-v-compute-operational.csv"
     get-eventlog -LogName Application -Source Docker | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_docker.csv"
-    Get-CimInstance win32_pagefileusage | Format-List | Out-File -Append "$ENV:TEMP\\$($using:timeStamp)_pagefile.txt"
+    Get-CimInstance win32_pagefileusage | Format-List * | Out-File -Append "$ENV:TEMP\\$($using:timeStamp)_pagefile.txt"
     Get-CimInstance win32_computersystem | Format-List AutomaticManagedPagefile | Out-File -Append "$ENV:TEMP\\$($using:timeStamp)_pagefile.txt"
     $paths += "$ENV:TEMP\\$($using:timeStamp)_pagefile.txt"
     mkdir 'c:\k\debug' -ErrorAction Ignore | Out-Null

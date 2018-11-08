@@ -7,4 +7,4 @@ RUN ["pwsh", "-Command", "$ver = (Invoke-WebRequest -UseBasicParsing https://sto
 RUN chmod +x kubectl
 SHELL [ "pwsh" ]
 ADD logslurp.ps1 /opt/k
-CMD logslurp.ps1
+ENTRYPOINT logslurp.ps1 

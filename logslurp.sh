@@ -35,7 +35,7 @@ read -r -d '' remoteCommand <<'EOF'
     Compress-Archive -Path $paths -DestinationPath $zipName;
     $netLogs | Foreach-Object { Remove-Item $_ } | Out-Null;
     Write-Host Compressing all logs to $zipName;
-    Get-ChildItem $zipName ;
+    (Get-ChildItem $zipName).FullName;
 EOF
 
 remoteEncoded=$(echo $remoteCommand | base64 -w 0)

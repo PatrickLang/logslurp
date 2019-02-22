@@ -24,7 +24,7 @@ read -r -d '' remoteCommand <<'EOF'
     $paths += "$ENV:TEMP\\$($timeStamp)_hyper-v-compute-operational.csv";
     get-eventlog -LogName Application -Source Docker | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($timeStamp)_docker.csv";
     $paths += "$ENV:TEMP\\$($timeStamp)_docker.csv";
-    Get-CimInstance win32_pagefileusage | Format-List * | Out-File -Append "$ENV:TEMP\\$($timeStamp)_pagefile.txt";
+    Get-CimInstance win32_pagefileusage | ConvertTo-CSV | Out-File -Append "$ENV:TEMP\\$($timeStamp)_pagefile.txt";
     Get-CimInstance win32_computersystem | Format-List AutomaticManagedPagefile | Out-File -Append "$ENV:TEMP\\$($timeStamp)_pagefile.txt";
     $paths += "$ENV:TEMP\\$($timeStamp)_pagefile.txt";
     mkdir 'c:\k\debug' -ErrorAction Ignore | Out-Null;

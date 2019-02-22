@@ -28,10 +28,11 @@ docker run -i -t -v ~/.kube/config:/root/.kube/config -v $PWD:/opt/k/out logslur
 Running the script
 
 ```
-./logslurp.sh  user@<masternode>.westus2.cloudapp.azure.com user@2709k8s010
+./logslurp.sh  user@<masternode>.westus2.cloudapp.azure.com user@2155k8s001
 ```
 
 ```
+./logslurp.sh  user@<masternode>.westus2.cloudapp.azure.com user@2155k8s001
 Get-WinEvent : No events were found that match the specified selection criteria.
 At line:1 char:854
 + ...  $crashes = Get-WinEvent -FilterHashtable @{logname='Application'; Pr ...
@@ -39,9 +40,9 @@ At line:1 char:854
     + CategoryInfo          : ObjectNotFound: (:) [Get-WinEvent], Exception
     + FullyQualifiedErrorId : NoMatchingEventsFound,Microsoft.PowerShell.Commands.GetWinEventCommand
 
-Format-List : A positional parameter cannot be found that accepts argument 'README.md'.
+Format-List : A positional parameter cannot be found that accepts argument 'Dockerfile'.
 At line:1 char:1767
-+ ... fileusage | Format-List Dockerfile README.md logslurp.gif logslurp.ps ...
++ ... fileusage | Format-List 2709k8s010-20190208-121844_logs Dockerfile RE ...
 +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     + CategoryInfo          : InvalidArgument: (:) [Format-List], ParameterBindingException
     + FullyQualifiedErrorId : PositionalParameterNotFound,Microsoft.PowerShell.Commands.FormatListCommand
@@ -51,17 +52,19 @@ File c:\k\debug\hns.psm1 already exists.
 File c:\k\debug\starthnstrace.cmd already exists.
 File c:\k\debug\startpacketcapture.cmd already exists.
 File c:\k\debug\stoppacketcapture.cmd already exists.
-WARNING: The names of some imported commands from the module 'hns' include unapproved verbs that might make them less discoverable. To find the commands with unapproved verbs, run the Import-Module command again with the Verbose parameter. For a
-list of approved verbs, type Get-Verb.
-C:\k\debug\f0jqvnpl.vnh
+WARNING: The names of some imported commands from the module 'hns' include unapproved verbs that might make
+them less discoverable. To find the commands with unapproved verbs, run the Import-Module command again with
+the Verbose parameter. For a list of approved verbs, type Get-Verb.
+C:\k\debug\ftt42tgm.hhp
 File c:\k\debug\VFP.psm1 already exists.
-Logs are available at C:\k\debug\f0jqvnpl.vnh
-Compressing all logs to 2709k8s010-20190208-121004_logs.zip
-C:\Users\azureuser\2709k8s010-20190208-121004_logs.zip
-Connection to 2709k8s010 closed.
+Logs are available at C:\k\debug\ftt42tgm.hhp
+Compressing all logs to 2155k8s001-20190222-020020_logs.zip
+C:\Users\azureuser\2155k8s001-20190222-020020_logs.zip
+Connection to 10.240.0.4 closed.
+2155k8s001-20190222-020020_logs.zip                                           100%   18KB 691.0KB/s   00:00
 ```
 
-The last line will show the path to retrieve.
+Now, you can read the logs from the zip file on the local machine.
 
 
 ```

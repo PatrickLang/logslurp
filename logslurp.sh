@@ -40,4 +40,9 @@ EOF
 
 remoteEncoded=$(echo $remoteCommand | base64 -w 0)
 
-ssh -t -o "ProxyCommand ssh -W %h:%p $1" $2 powershell.exe "-nologo -command \" Invoke-Expression -Command ([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String('$remoteEncoded')))  \" "
+tempOutput=$(mktemp)
+# powershell seems to fail without a tty, so -t is required
+ssh -t -o "ProxyCommand ssh -W %h:%p $1" $2 powershell.exe "-nologo -command \" Invoke-Expression -Command ([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String('$remoteEncoded')))  \" " | tee "$tempOutput"
+remoteFile=$(cat -v "$tempOutput" | grep -o "^C:.*zip" | tail -n1)
+scp -o "ProxyCommand ssh -W %h:%p $1" $2:"$remoteFile" .
+rm "$tempOutput"

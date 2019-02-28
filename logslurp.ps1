@@ -27,6 +27,7 @@ $nodes.items | Where-Object { $_.metadata.labels.'beta.kubernetes.io/os' -eq 'wi
   $zipName = "$($_.status.nodeInfo.machineID)-$($timeStamp)_logs.zip"
   $remoteZipPath = Invoke-Command -Session $_.pssession {
     $paths = get-childitem c:\k\*.log -Exclude $using:lockedFiles
+    $paths += get-childitem c:\k\azure-vnet.log.*
     $paths += $using:lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru }
     $scm = Get-WinEvent -FilterHashtable @{logname='System';ProviderName='Service Control Manager'} | Where-Object { $_.Message -Like "*docker*" -or $_.Message -Like "*kub*" } | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message
     # 2004 = resource exhaustion, other 5 events related to reboots

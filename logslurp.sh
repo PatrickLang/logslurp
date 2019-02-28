@@ -14,6 +14,7 @@ read -r -d '' remoteCommand <<'EOF'
     $zipName = "$(hostname)-$($timeStamp)_logs.zip";
 
     $paths = get-childitem c:\k\*.log -Exclude $lockedFiles;
+    $paths += get-childitem c:\k\azure-vnet.log.*;
     $paths += $lockedFiles | Foreach-Object { Copy-Item "c:\k\$_" . -Passthru };
     $scm = Get-WinEvent -FilterHashtable @{logname='System';ProviderName='Service Control Manager'} | Where-Object { $_.Message -Like "*docker*" -or $_.Message -Like "*kub*" } | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message;
     $reboots = Get-WinEvent -FilterHashtable @{logname='System'; id=1074,1076,2004,6005,6006,6008} | Select-Object -Property TimeCreated, Id, LevelDisplayName, Message;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ -z $1 ]] || [[ -z $2 ]]; then
-    echo "Usage: $0 adminuser@master adminuser@windowsnode"
+if [[ -z $1 ]]; then
+    echo "Usage: $0 adminuser@windowsnode"
     echo
     echo "Note: SSH agent forwarding must be enabled for your current session to avoid passwords"
     exit 1
@@ -43,7 +43,7 @@ remoteEncoded=$(echo $remoteCommand | base64 -w 0)
 
 tempOutput=$(mktemp)
 # powershell seems to fail without a tty, so -t is required
-ssh -t -o "ProxyCommand ssh -W %h:%p $1" $2 powershell.exe "-nologo -command \" Invoke-Expression -Command ([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String('$remoteEncoded')))  \" " | tee "$tempOutput"
+ssh -t $1 powershell.exe "-nologo -command \" Invoke-Expression -Command ([System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String('$remoteEncoded')))  \" " | tee "$tempOutput"
 remoteFile=$(cat -v "$tempOutput" | grep -o "^C:.*zip" | tail -n1)
 scp -o "ProxyCommand ssh -W %h:%p $1" $2:"$remoteFile" .
 rm "$tempOutput"

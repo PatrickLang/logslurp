@@ -1,3 +1,6 @@
+> This repo is no longer maintained. If you want to collect logs for Windows nodes on AKS, use this script. https://github.com/Azure/aks-engine/blob/master/scripts/collect-windows-logs.ps1 It is more thorough than this older prototype.
+
+
 # logslurp
 
 This will find all the Windows Kubernetes nodes, and attempt to gather all the logs from `c:\k\*.log` into a single zip file. 
